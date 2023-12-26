@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -14,7 +15,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, Followable;
 
     /**
      * The attributes that are mass assignable.
@@ -50,22 +51,27 @@ class User extends Authenticatable
     public function avatar(): Attribute
     {
         return Attribute::make(
-            get: fn() => 'https://i.pravatar.cc/40?u=' . $this->email
+            get: fn() => "https://i.pravatar.cc/200?u=$this->email"
         );
     }
 
     public function tweets(): HasMany
     {
-        return $this->hasMany(Tweet::class);
-    }
-
-    public function follows(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class);
+        return $this->hasMany(Tweet::class)->latest();
     }
 
     public function timeline()
     {
-        return Tweet::where('user_id', $this->id)->latest()->get();
+        $following_ids = $this->following()->pluck('id');
+
+        return Tweet::whereIn('user_id', $following_ids)
+            ->orWhere('user_id', $this->id)
+            ->latest()
+            ->get();
+    }
+
+    public function path(): string
+    {
+        return "profiles/$this->name";
     }
 }
