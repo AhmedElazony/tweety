@@ -21,18 +21,30 @@
         {{--            @include('layouts.navigation') --}}
 
         <!-- Page Heading -->
-        @if (isset($header))
-            <section class="px-8 py-4">
-                <header class="container mx-auto">
-                    {{ $header }}
-                </header>
-            </section>
-        @endif
+        <section class="px-8 py-4">
+            <header class="container mx-auto">
+                <h1>
+                    <x-application-logo />
+                </h1>
+            </header>
+        </section>
 
         <!-- Page Content -->
         <section class="px-8">
             <main>
-                {{ $slot }}
+                <div class="lg:flex lg:justify-center">
+                    <div class="lg:w-1/6">
+                        @include('tweets.partials._sidebar-links')
+                    </div>
+
+                    <div class="lg:flex-1 lg:mx-10" style="max-width: 700px">
+                        {{ $slot }}
+                    </div>
+
+                    <div class="lg:w-1/6">
+                        @include('tweets.partials._friends-list')
+                    </div>
+                </div>
             </main>
         </section>
     </div>
