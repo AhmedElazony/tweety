@@ -13,7 +13,7 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data">
         @csrf
         @method('patch')
 
@@ -28,19 +28,23 @@
             <x-text-input id="username" name="username" type="text" class="mt-1 block w-full" :value="old('username', $user->username)" required autofocus />
             <x-input-error class="mt-2" :messages="$errors->get('username')" />
         </div>
+        <div>
+            <x-input-label for="bio" :value="__('Bio')" />
+            <x-text-input id="bio" name="bio" type="text" class="mt-1 block w-full" :value="old('bio', $user->bio)" required autofocus />
+            <x-input-error class="mt-2" :messages="$errors->get('bio')" />
 
+            <x-input-label class="mt-2" for="avatar" :value="__('avatar')" />
+            <div class="flex">
+                <x-text-input id="avatar" name="avatar" type="file" class="mt-1 block w-full" autocomplete="username" />
+                <img src="{{ $user->avatar }}" alt="your avatar" width="60"/>
+            </div>
+            <x-input-error class="mt-2" :messages="$errors->get('avatar')" />
+        </div>
         <div>
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
-            <x-input-label for="bio" :value="__('Bio')" />
-            <x-text-input id="bio" name="bio" type="text" class="mt-1 block w-full" :value="old('bio', $user->bio)" required autofocus />
-            <x-input-error class="mt-2" :messages="$errors->get('bio')" />
-
-            <x-input-label for="avatar" :value="__('avatar')" />
-            <x-text-input class="py-2" id="avatar" name="avatar" type="file" class="mt-1 block w-full" :value="old('avatar', $user->avatar)" required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('avatar')" />
 
             <div class="mt-4">
                 <x-input-label for="password" :value="__('Password')" />

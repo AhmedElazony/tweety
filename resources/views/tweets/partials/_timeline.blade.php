@@ -1,5 +1,7 @@
 <div class="border border-gray-300 rounded-lg mt-5">
-    @foreach ($tweets as $tweet)
+    @forelse ($tweets as $tweet)
         @include('tweets.partials._tweet')
-    @endforeach
+    @empty
+        <h1 class="px-6 py-6">Your Timeline Is Empty!</h1>
+    @endforelse
 </div>

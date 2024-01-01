@@ -24,7 +24,9 @@
         <section class="px-8 py-4">
             <header class="container mx-auto">
                 <h1>
-                    <x-application-logo />
+                    <a href="/">
+                        <x-application-logo />
+                    </a>
                 </h1>
             </header>
         </section>

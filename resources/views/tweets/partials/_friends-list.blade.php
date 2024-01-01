@@ -7,11 +7,11 @@
             $following = auth()->user()->following->all();
             $follows = array_merge($followers, $following);
         @endphp
-        @foreach ($following as $user)
+        @forelse ($following as $user)
             <li class="mb-4">
                 <div class="flex justify-between">
                     <a href="{{ route('profile.show', $user->name) }}" class="flex items-center text-sm">
-                        <img src="{{ $user->avatar }}" alt="user avatar" class="rounded-full mr-2" width="40" height="40">
+                        <img src="{{ $user->avatar }}" alt="user avatar" class="rounded-full mr-2 w-12 h-11" width="40" height="40">
 
                         {{ $user->name }}
                     </a>
@@ -29,6 +29,8 @@
 {{--                    @endif--}}
                 </div>
             </li>
-        @endforeach
+        @empty
+            <li>No Friends Yet!</li>
+        @endforelse
     </ul>
 </div>
