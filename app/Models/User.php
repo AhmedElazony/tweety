@@ -24,7 +24,10 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
+        'bio',
+        'avatar',
         'password',
     ];
 
@@ -51,7 +54,7 @@ class User extends Authenticatable
     public function avatar(): Attribute
     {
         return Attribute::make(
-            get: fn() => "https://i.pravatar.cc/200?u=$this->email"
+            get: fn($value) => $value === null ? asset('images/default-avatar.jpg') : asset('storage/'.$value)
         );
     }
 
@@ -70,8 +73,8 @@ class User extends Authenticatable
             ->get();
     }
 
-    public function path(): string
+    public function path($append = ''): string
     {
-        return "profiles/$this->name";
+        return $append ? "/profiles/{$this->username}/{$append}" : "/profiles/{$this->username}";
     }
 }
