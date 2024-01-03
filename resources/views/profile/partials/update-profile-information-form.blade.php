@@ -30,7 +30,7 @@
         </div>
         <div>
             <x-input-label for="bio" :value="__('Bio')" />
-            <x-text-input id="bio" name="bio" type="text" class="mt-1 block w-full" :value="old('bio', $user->bio)" required autofocus />
+            <x-text-input id="bio" name="bio" type="text" class="mt-1 block w-full" :value="old('bio', $user->bio)" autofocus />
             <x-input-error class="mt-2" :messages="$errors->get('bio')" />
 
             <x-input-label class="mt-2" for="avatar" :value="__('avatar')" />
