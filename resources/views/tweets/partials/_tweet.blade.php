@@ -6,10 +6,10 @@
     </div>
 
     <div>
-        <a class="flex items-center" href="{{ route('profile.show', $tweet->user->username) }}">
+        <a class="flex items-center hover:underline" href="{{ route('profile.show', $tweet->user->username) }}">
             <h5 class="font-bold">{{ $tweet->user->name }}</h5>
             @if($tweet->user->slogan ?? false)
-                <img src="{{ asset($tweet->user->slogan) }}" class="ml-1 w-6" alt="">
+                <img src="{{ asset($tweet->user->slogan) }}" class="ml-1" alt="" width="23" height="23">
             @endif
         </a>
         <p class="text-xs text-gray-800">{{ '@'.$tweet->user->username  }}</p>

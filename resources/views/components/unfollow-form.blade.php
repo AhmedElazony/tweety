@@ -1,5 +1,5 @@
 @props(['user'])
-<form action="/profiles/{{ $user->name }}/follow" method="POST">
+<form action="/profiles/{{ $user->username }}/follow" method="POST">
     @csrf
     @method('DELETE')
     <input type="hidden" name="user" id="user" value="{{ $user }}">

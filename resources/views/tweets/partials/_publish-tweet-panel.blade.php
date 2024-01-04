@@ -16,7 +16,7 @@
 
         <footer class="flex justify-between">
             <a href="{{ route('profile.show', currentUser()->username)  }}">
-                <img src="{{ currentUser()->avatar }}" alt="user avatar" class="rounded-full mr-2 w-12 h-11" width="40" height="40">
+                <img src="{{ currentUser()->avatar }}" alt="user avatar" class="rounded-full mr-2 w-11 h-11" width="40" height="40">
             </a>
 
             <button type="submit" class="bg-blue-500 rounded-full shadow text-white py-2 px-4 hover:bg-blue-600">Tweet!</button>

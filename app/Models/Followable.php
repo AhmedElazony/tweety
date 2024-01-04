@@ -25,7 +25,7 @@ trait Followable
         return $this->following()->save($user);
     }
 
-    public function unfollow(User $user)
+    public function unfollow(User $user): int
     {
         return $this->following()->detach($user);
     }
@@ -39,5 +39,11 @@ trait Followable
         return $this->following()
             ->where('following_user_id', $user->id)
             ->exists();
+    }
+
+    // get all friends of the auth user.
+    public function follows()
+    {
+        return currentUser()->followers->merge(currentUser()->following);
     }
 }

@@ -18,7 +18,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <div class="flex items-center">
-                    <h2 class="font-bold text-2xl">{{ $user->name  }}</h2>
+                    <h2 class="font-bold text-2xl">{{ $user->name }}</h2>
 
                     @if($user->slogan ?? false)
                         <img src="{{ asset($user->slogan) }}" class="ml-1 mt-1 w-7" alt="">
