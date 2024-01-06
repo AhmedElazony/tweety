@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: npm ci && npm run build && composer install && composer update --ignore-platform-req=ext-sodium
+      - run: npm ci && npm run build && composer install --ignore-platform-reqs && composer update --ignore-platform-req=ext-sodium
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
