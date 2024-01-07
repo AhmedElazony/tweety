@@ -16,7 +16,8 @@ class ProfileController extends Controller
     public function show(User $user)
     {
         return view('profile.show', [
-            'user' => $user
+            'user' => $user,
+            'tweets' => $user->tweets()->withLikes()->latest()->paginate(20)
         ]);
     }
 
@@ -41,7 +42,9 @@ class ProfileController extends Controller
             return Redirect::back()->withErrors(['password' => 'Password is Incorrect!']);
         }
 
-        $attributes['avatar'] = request()->file('avatar')->store('avatars');
+        if ($request->has('avatar')) {
+            $attributes['avatar'] = request()->file('avatar')->store('avatars');
+        }
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
