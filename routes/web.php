@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\FollowsController;
 use App\Http\Controllers\TweetController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TweetDisLikeController;
+use App\Http\Controllers\TweetLikeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,6 +25,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/profiles/{user:username}/follow', [FollowsController::class, 'store'])->name('follow.store');
     Route::delete('/profiles/{user:username}/follow', [FollowsController::class, 'destroy'])->name('follow.destroy');
+
+    Route::post('/tweets/{tweet}/like', [TweetLikeController::class, 'store']);
+    Route::post('/tweets/{tweet}/dislike', [TweetDisLikeController::class, 'store']);
 });
 
 Route::middleware('auth')->group(function () {
@@ -30,4 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/explore', ExploreController::class)
+    ->name('explore');
+
 require __DIR__.'/auth.php';
