@@ -6,18 +6,52 @@
     </div>
 
     <div>
-        <a class="flex items-center hover:underline" href="{{ route('profile.show', $tweet->user->username) }}">
-            <h5 class="font-bold">{{ $tweet->user->name }}</h5>
+        <div class="flex items-center">
+            <a class="hover:underline" href="{{ route('profile.show', $tweet->user->username) }}">
+                <h5 class="font-bold">{{ $tweet->user->name }}</h5>
+            </a>
             @if($tweet->user->slogan ?? false)
                 <img src="{{ asset($tweet->user->slogan) }}" class="ml-1" alt="" width="23" height="23">
             @endif
-        </a>
+        </div>
         <p class="text-xs text-gray-800">{{ '@'.$tweet->user->username  }}</p>
         <h6 class="text-xs mb-4">{{ $tweet->created_at->diffForHumans() }}</h6>
 
         <p class="text-sm">
             {{ $tweet->body }}
         </p>
+
+        {{-- like --}}
+        <div class="flex mt-1">
+            <form action="/tweets/{{$tweet->id}}/like" method="POST" class="flex items-center mr-4">
+                @csrf
+
+                <button type="submit">
+                    @if (currentUser()->liked($tweet))
+                        <x-liked />
+                    @else
+                        <x-non-liked />
+                    @endif
+                </button>
+
+                <span class="ml-1">
+                    {{ $tweet->likes ?? 0 }}
+                </span>
+
+            </form>
+
+            {{-- dislike --}}
+            <form action="/tweets/{{$tweet->id}}/dislike" method="POST" class="flex items-center">
+                @csrf
+
+                <button type="submit">
+                    <x-dislike :tweet="$tweet" />
+                </button>
+                <span>
+                    {{ $tweet->dislikes ?? 0 }}
+                </span>
+            </form>
+        </div>
     </div>
 
 </div>

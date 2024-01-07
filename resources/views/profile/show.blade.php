@@ -16,7 +16,7 @@
             >
         </div>
         <div class="flex justify-between items-center mb-6">
-            <div>
+            <div style="max-width: 270px">
                 <div class="flex items-center">
                     <h2 class="font-bold text-2xl">{{ $user->name }}</h2>
 
@@ -31,7 +31,6 @@
             <div class="flex">
                 @if(currentUser()->is($user))
                     <a href="{{ route('profile.edit') }}" class="rounded-full border border-gray-200 text-black text-sm mr-2 py-2 px-4 hover:bg-gray-100">Edit Profile</a>
-                    <x-logout-form />
                 @elseif(currentUser()->isFollowing($user))
                     <x-unfollow-form :user="$user"/>
                 @else
@@ -41,7 +40,7 @@
         </div>
 
         <p class="text-sm">
-            {{ $user->bio ?? 'الحمد لله ناصر المجاهدين، ومُذل المُستكبرين، والصلاة والسلام على نبينا المجاهد الشهيد محمد ﷺ' }}
+            {{ $user->bio }}
         </p>
         <div class="flex text-sm mt-3 mb-3">
             <p class="">{{ $user->followers->count() }} Followers</p>
@@ -53,8 +52,6 @@
         </div>
     </header>
 
-    @include('tweets.partials._timeline', [
-        'tweets' => $user->tweets
-    ])
+    @include('tweets.partials._timeline')
 
 </x-app-layout>

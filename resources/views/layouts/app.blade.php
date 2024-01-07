@@ -21,15 +21,27 @@
         {{--            @include('layouts.navigation') --}}
 
         <!-- Page Heading -->
-        <section class="px-8 py-4">
-            <header class="container mx-auto">
+        <section class="px-8 py-0 mb-4 bg-gray-300 border border-gray-300 rounded-md">
+            <header class="container mx-auto flex justify-between px-2 py-2">
                 <h1>
                     <a href="/">
-                        <x-application-logo />
+                        <x-application-logo class="inline-block"/>
+                    </a>
+                </h1>
+
+                <h1>
+                    <a class="flex items-center" href="{{ currentUser()->path()  }}">
+                        @if(currentUser()->slogan ?? false)
+                            <img src="{{ asset(currentUser()->slogan) }}" class="mr-1" alt="" width="23" height="23">
+                        @endif
+                        <h3 class="font-bold mr-2 hover:underline">{{ currentUser()->name  }}</h3>
+
+                        <img src="{{ currentUser()->avatar ?? asset('images/default-avatar.jpg') }}" alt="user avatar" class="rounded-full mr-2 w-11 h-11" width="40" height="40">
                     </a>
                 </h1>
             </header>
         </section>
+
 
         <!-- Page Content -->
         <section class="px-8">

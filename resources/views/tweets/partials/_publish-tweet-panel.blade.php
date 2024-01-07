@@ -1,8 +1,8 @@
-<div class="border border-blue-400 rounded-lg px-8 py-6 mb-8">
+<div class="border border-blue-400 rounded-2xl px-8 py-6 mb-8">
     <form action="/tweets" method="POST">
         @csrf
 
-        <textarea name="body" id="body" class="w-full border-transparent" placeholder="what's up?"></textarea>
+        <textarea name="body" id="body" class="w-full border-transparent" required placeholder="what's up?"></textarea>
 
         <hr class="my-3">
 
