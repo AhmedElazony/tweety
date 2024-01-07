@@ -22,7 +22,7 @@
 
         <!-- Page Heading -->
         <section class="px-8 py-0 mb-4 bg-gray-300 border border-gray-300 rounded-md">
-            <header class="container mx-auto flex justify-between px-2 py-2">
+            <header class="container mx-auto flex justify-between px-2 py-2 items-center">
                 <h1>
                     <a href="/">
                         <x-application-logo class="inline-block"/>
