@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 echo "Running composer"
+composer self-update --2
 composer install --no-dev --working-dir=/var/www/html
 composer update --no-dev --prefer-dist
 
