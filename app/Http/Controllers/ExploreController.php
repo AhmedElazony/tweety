@@ -9,9 +9,13 @@ class ExploreController extends Controller
 {
     public function __invoke()
     {
+        $followings = currentUser()->following->pluck('id');
+
+        $users = User::whereNotIN('id', $followings->merge(currentUser()->id));
+
         return view('tweets.explore', [
-            'users' => User::where('id', '!=', currentUser()->id)
-                ->paginate(30)
+            'users' => $users->paginate(20)
+
         ]);
     }
 }

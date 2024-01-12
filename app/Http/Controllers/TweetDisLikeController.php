@@ -12,10 +12,6 @@ class TweetDisLikeController extends Controller
             return $this->destroy($tweet);
         }
 
-        if (currentUser()->liked($tweet)) {
-            return back()->withErrors(['tweet' => 'you can not like and dislike the same tweet!']);
-        }
-
         currentUser()->dislike($tweet);
 
         return back();

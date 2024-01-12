@@ -14,13 +14,11 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="stylesheet" href="{{ asset('build/assets/app-f2a72f25.css')  }}">
+{{--    <link rel="stylesheet" href="{{ asset('build/assets/app-f2a72f25.css')  }}">--}}
 </head>
 
 <body class="font-sans antialiased">
-    <div class="">
-        {{--            @include('layouts.navigation') --}}
-
+    <div>
         <!-- Page Heading -->
         <section class="px-8 py-0 mb-4 bg-gray-300 border border-gray-300 rounded-md">
             <header class="container mx-auto flex justify-between px-2 py-2 items-center">
@@ -64,5 +62,5 @@
         </section>
     </div>
 </body>
-<script src="{{ asset('build/assets/app-b1941ff8.js') }}"></script>
+{{--<script src="{{ asset('build/assets/app-b1941ff8.js') }}"></script>--}}
 </html>

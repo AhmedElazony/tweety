@@ -18,7 +18,7 @@
         <h6 class="text-xs mb-4">{{ $tweet->created_at->diffForHumans() }}</h6>
 
         <p class="text-sm">
-            {{ $tweet->body }}
+            {!! $tweet->body !!}
         </p>
 
         {{-- like --}}

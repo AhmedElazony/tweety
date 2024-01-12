@@ -26,9 +26,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/tweets/{tweet}/like', [TweetLikeController::class, 'store']);
     Route::post('/tweets/{tweet}/dislike', [TweetDisLikeController::class, 'store']);
 
-    Route::post('/profiles/{user:username}/follow', [FollowsController::class, 'store'])->name('follow.store');
-    Route::delete('/profiles/{user:username}/follow', [FollowsController::class, 'destroy'])->name('follow.destroy');
+    Route::post('/{user:username}/follow', [FollowsController::class, 'store'])->name('follow.store');
+    Route::delete('/{user:username}/follow', [FollowsController::class, 'destroy'])->name('follow.destroy');
 
+    Route::get('/profiles/{user:username}/followers', [FollowsController::class, 'show'])->name('followers');
+    Route::get('/profiles/{user:username}/following', [FollowsController::class, 'show'])->name('following');
     Route::get('/profiles/{user:username}', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
