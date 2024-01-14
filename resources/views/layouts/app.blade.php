@@ -13,8 +13,8 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     <!-- Scripts -->
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-{{--    <link rel="stylesheet" href="{{ asset('build/assets/app-f2a72f25.css')  }}">--}}
 </head>
 
 <body class="font-sans antialiased">

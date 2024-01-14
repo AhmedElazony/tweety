@@ -32,11 +32,33 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profiles/{user:username}/followers', [FollowsController::class, 'show'])->name('followers');
     Route::get('/profiles/{user:username}/following', [FollowsController::class, 'show'])->name('following');
     Route::get('/profiles/{user:username}', [ProfileController::class, 'show'])->name('profile.show');
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/explore', ExploreController::class)->name('explore');
 });
+
+Route::middleware('auth')->group(function() {
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::middleware(['auth', 'verified', 'admin'])->group(function () {
+    Route::get('/send-emails', function () {
+        $emails = \App\Models\User::pluck('email');
+        foreach($emails as $email) {
+            \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\AdminMail());
+        }
+
+       return back();
+    });
+});
+
+Route::get('/test', function() {
+    return view('test');
+})->middleware('auth');
+
+Route::post('/test', function() {
+    return event(new \App\Models\Notification('Hello, My World!'));
+})->middleware('auth');
 
 require __DIR__.'/auth.php';
