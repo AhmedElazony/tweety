@@ -14,16 +14,15 @@
                 <img src="{{ asset($comment->user->slogan) }}" class="ml-1" alt="" width="23" height="23">
             @endif
         </div>
-        <a href="{{ route('tweet.show', $comment->id) }}">
-            <p class="text-xs text-gray-800">{{ '@'.$comment->user->username  }}</p>
-            <h6 class="text-xs mb-4">{{ $comment->created_at->diffForHumans() }}</h6>
 
-            <div>
-                <p class="text-sm">
-                    {!! $comment->body !!}
-                </p>
-            </div>
-        </a>
+        <p class="text-xs text-gray-800">{{ '@'.$comment->user->username  }}</p>
+        <h6 class="text-xs mb-4">{{ $comment->created_at->diffForHumans() }}</h6>
+
+        <div>
+            <p class="text-sm">
+                {!! $comment->body !!}
+            </p>
+        </div>
 
     </div>
 
