@@ -14,10 +14,11 @@
 
     <!-- Scripts -->
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased">
+<body class="font-sans antialiased" id="app">
     <div>
         <!-- Page Heading -->
         <section class="px-8 py-0 mb-4 bg-gray-300 border border-gray-300 rounded-md">

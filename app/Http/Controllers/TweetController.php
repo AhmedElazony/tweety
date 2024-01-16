@@ -16,17 +16,29 @@ class TweetController extends Controller
         ]);
     }
 
+    public function show(Tweet $tweet)
+    {
+        return view('tweets.show', [
+            'tweet' => Tweet::where('id', '=', $tweet->id)
+                ->withLikes()
+                ->with('comments')
+                ->get()
+                ->first()
+        ]);
+    }
+
     public function store()
     {
         $attributes = request()->validate([
             'body' => 'required|max:225'
         ]);
 
-        Tweet::create([
+        $tweet = Tweet::create([
             'user_id' => auth()->id(),
-             'body' => $attributes['body']
+            'body' => $attributes['body']
         ]);
 
+        event(new \App\Events\MessageNotification($tweet->user, 'Published a Tweet'));
         return redirect('/home')->with('success', 'Your tweet has been published!');
     }
 }

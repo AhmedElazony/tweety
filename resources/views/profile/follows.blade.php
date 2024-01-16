@@ -30,7 +30,7 @@
                             </a>
                         @endif
 
-                        @if($user->isFollowing(currentUser()) && request()->routeIs('followers'))
+                        @if($user->isFollowing(currentUser()) && request()->routeIs('following'))
                             <p class="text-xs bg-gray-300 ml-1 my-0">follows you!</p>
                         @endif
                     </div>

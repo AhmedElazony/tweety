@@ -63,6 +63,11 @@ class User extends Authenticatable implements EmailVerification
         return $this->hasMany(Tweet::class)->latest();
     }
 
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     public function likes(): HasMany
     {
         return $this->hasMany(Like::class);

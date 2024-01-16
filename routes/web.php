@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\FollowsController;
 use App\Http\Controllers\TweetController;
@@ -23,6 +24,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/home', [TweetController::class, 'index'])->name('home');
     Route::post('/tweets', [TweetController::class, 'store'])->name('tweet.store');
 
+    Route::get('/tweets/{tweet}', [TweetController::class, 'show'])->name('tweet.show');
+
+    Route::post('/comments', [CommentController::class, 'store'])->name('comment.store');
+
     Route::post('/tweets/{tweet}/like', [TweetLikeController::class, 'store']);
     Route::post('/tweets/{tweet}/dislike', [TweetDisLikeController::class, 'store']);
 
@@ -45,6 +50,7 @@ Route::middleware('auth')->group(function() {
 Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/send-emails', function () {
         $emails = \App\Models\User::pluck('email');
+
         foreach($emails as $email) {
             \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\AdminMail());
         }
@@ -52,13 +58,5 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
        return back();
     });
 });
-
-Route::get('/test', function() {
-    return view('test');
-})->middleware('auth');
-
-Route::post('/test', function() {
-    return event(new \App\Models\Notification('Hello, My World!'));
-})->middleware('auth');
 
 require __DIR__.'/auth.php';

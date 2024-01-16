@@ -14,15 +14,19 @@
                 <img src="{{ asset($tweet->user->slogan) }}" class="ml-1" alt="" width="23" height="23">
             @endif
         </div>
-        <p class="text-xs text-gray-800">{{ '@'.$tweet->user->username  }}</p>
-        <h6 class="text-xs mb-4">{{ $tweet->created_at->diffForHumans() }}</h6>
+        <a href="{{ route('tweet.show', $tweet->id) }}">
+            <p class="text-xs text-gray-800">{{ '@'.$tweet->user->username  }}</p>
+            <h6 class="text-xs mb-4">{{ $tweet->created_at->diffForHumans() }}</h6>
 
-        <p class="text-sm">
-            {!! $tweet->body !!}
-        </p>
+            <div>
+                <p class="text-sm">
+                    {!! $tweet->body !!}
+                </p>
+            </div>
+        </a>
 
         {{-- like --}}
-        <div class="flex mt-1">
+        <div class="flex mt-1 items-center">
             <form action="/tweets/{{$tweet->id}}/like" method="POST" class="flex items-center mr-4">
                 @csrf
 
@@ -37,7 +41,6 @@
                 <span class="ml-1">
                     {{ $tweet->likes ?? 0 }}
                 </span>
-
             </form>
 
             {{-- dislike --}}
@@ -51,6 +54,13 @@
                     {{ $tweet->dislikes ?? 0 }}
                 </span>
             </form>
+
+            <a href="{{ route('tweet.show', $tweet->id) }}">
+                <x-comment-button />
+            </a>
+            <span class="ml-1">
+                {{ $tweet->comments()->count() ?? 0 }}
+            </span>
         </div>
     </div>
 
