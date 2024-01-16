@@ -3,5 +3,5 @@
 </div>
 
 <div class="mt-4 flex items-center justify-between">
-    <a href="{{ route('home')  }}" class="underline text-sm text-gray-600">افتح الموقع يا حبيب اخوك</a>
+    <a href="tweets/122" class="underline text-sm text-gray-600">ضيفنا فيتشر جديدة اخل جربها</a>
 </div>
