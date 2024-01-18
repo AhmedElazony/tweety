@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Share;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Tweet;
 
@@ -21,6 +23,7 @@ class TweetController extends Controller
         return view('tweets.show', [
             'tweet' => Tweet::where('id', '=', $tweet->id)
                 ->withLikes()
+                ->with('user')
                 ->with('comments')
                 ->get()
                 ->first()

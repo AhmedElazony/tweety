@@ -37,10 +37,15 @@ class Tweet extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public function shares(): HasMany
+    {
+        return $this->hasMany(Share::class);
+    }
+
     public function scopeWithLikes(Builder $query): void
     {
         // left join sub-query.
-        // like SELECT * FROM tweets
+        // like: SELECT * FROM tweets
         // LEFT JOIN (SELECT tweet_id, SUM(liked = TRUE) AS likes, SUM(liked = false) AS dislikes FROM likes GROUP BY tweet_id) AS likes
         // ON likes.tweet_id = tweets.id;
         $query->leftJoinSub(
@@ -50,5 +55,18 @@ class Tweet extends Model
             '=',
             'tweets.id'
         );
+    }
+    public function isShared(): bool
+    {
+        return (bool) $this->shares()
+            ->where('tweet_id', '=', $this->id)
+            ->count();
+    }
+
+    public function scopeWithUsersSharing(Builder $query)
+    {
+        $query->join('shares', 'shares.tweet_id', '=', 'tweets.id')
+            ->select(['tweets.*', 'likes', 'dislikes', 'shares.user_id as sharing_user', 'shares.created_at'])
+            ->latest('shares.created_at');
     }
 }

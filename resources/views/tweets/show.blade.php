@@ -63,6 +63,15 @@
                     {{ $tweet->comments()->count() ?? 0 }}
                  </span>
 
+                <form action="/tweets/{{$tweet->id}}/share" method="POST" class="items-center flex bottom-3 right-3 py-2 px-4">
+                    @csrf
+
+                    <button type="submit">
+                        <x-share :tweet="$tweet" />
+                    </button>
+                    <p class="ml-1">{{$tweet->shares()->count() ?? 0}}</p>
+                </form>
+
                 <div class="flex bottom-3 right-3 py-2 px-4">
                     @if($tweet->user->is(currentUser()))
                         <x-tweet-dropdown :tweet="$tweet" />

@@ -3,6 +3,7 @@
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\FollowsController;
+use App\Http\Controllers\ShareController;
 use App\Http\Controllers\TweetController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TweetDisLikeController;
@@ -27,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/tweets/{tweet}', [TweetController::class, 'show'])->name('tweet.show');
     Route::get('/tweets/{tweet}/edit', [TweetController::class, 'edit'])->name('tweet.edit');
     Route::put('/tweets/{tweet}/update', [TweetController::class, 'update'])->name('tweet.update');
+    Route::post('/tweets/{tweet}/share', ShareController::class)->name('tweet.share');
     Route::delete('/tweets/{tweet}/delete', [TweetController::class, 'destroy'])->name('tweet.destroy');
 
     Route::post('/comments', [CommentController::class, 'store'])->name('comment.store');

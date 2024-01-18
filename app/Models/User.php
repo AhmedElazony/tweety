@@ -15,7 +15,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements EmailVerification
 {
-    use HasApiTokens, HasFactory, MustVerifyEmail, Notifiable, Followable, CanLike;
+    use HasApiTokens, HasFactory, MustVerifyEmail, Notifiable, Followable, CanLike, CanShare;
 
     /**
      * The attributes that are mass assignable.
@@ -73,14 +73,21 @@ class User extends Authenticatable implements EmailVerification
         return $this->hasMany(Like::class);
     }
 
+    public function shares(): HasMany
+    {
+        return $this->hasMany(Share::class);
+    }
+
     public function timeline()
     {
-        $following_ids = $this->following()->pluck('id');
+        $followingIds = $this->following()->pluck('id');
 
-        return Tweet::whereIn('user_id', $following_ids)
-            ->orWhere('user_id', $this->id)
+        return Tweet::whereIn('tweets.user_id', $followingIds)
+            ->orWhere('tweets.user_id', $this->id)
             ->withLikes()
-            ->latest()
+            ->withUsersSharing()
+            ->with('user')
+            ->latest('tweets.created_at')
             ->paginate(20);
     }
 

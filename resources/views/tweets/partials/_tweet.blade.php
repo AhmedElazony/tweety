@@ -1,3 +1,9 @@
+@if($sharingUser = \App\Models\User::find($tweet->sharing_user) ?? false)
+    <div class=" text-sm font-semibold ml-2">
+        <p><a class="hover:underline text-gray-700" href="{{$sharingUser->path()}}">{{'@'.$sharingUser->username}}</a> shared this tweet.</p>
+    </div>
+@endif
+
 <div class="flex p-4 {{ $loop->last ? '' : 'border-b border-b-gray' }}">
     <div class="mr-2 flex-shrink-0">
         <a href="{{ route('profile.show', $tweet->user->username) }}">
@@ -7,12 +13,14 @@
 
     <div>
         <div class="flex items-center">
-            <a class="hover:underline" href="{{ route('profile.show', $tweet->user->username) }}">
-                <h5 class="font-bold">{{ $tweet->user->name }}</h5>
-            </a>
-            @if($tweet->user->slogan ?? false)
-                <img src="{{ asset($tweet->user->slogan) }}" class="ml-1" alt="" width="23" height="23">
-            @endif
+            <div>
+                <a class="hover:underline" href="{{ route('profile.show', $tweet->user->username) }}">
+                    <h5 class="font-bold">{{ $tweet->user->name }}</h5>
+                </a>
+                @if($tweet->user->slogan ?? false)
+                    <img src="{{ asset($tweet->user->slogan) }}" class="ml-1" alt="" width="23" height="23">
+                @endif
+            </div>
         </div>
         <a href="{{ route('tweet.show', $tweet->id) }}">
             <p class="text-xs text-gray-800">{{ '@'.$tweet->user->username  }}</p>
@@ -62,6 +70,15 @@
             <span class="ml-1">
                 {{ $tweet->comments()->count() ?? 0 }}
             </span>
+
+            <form action="/tweets/{{$tweet->id}}/share" method="POST" class="items-center flex bottom-3 right-3 py-2 px-4">
+                @csrf
+
+                <button type="submit">
+                    <x-share :tweet="$tweet" />
+                </button>
+                <p class="ml-1">{{$tweet->shares()->count() ?? 0}}</p>
+            </form>
 
             <div class="flex bottom-3 right-3 py-2 px-4">
                 @if($tweet->user->is(currentUser()))
