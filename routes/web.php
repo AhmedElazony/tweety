@@ -25,6 +25,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/tweets', [TweetController::class, 'store'])->name('tweet.store');
 
     Route::get('/tweets/{tweet}', [TweetController::class, 'show'])->name('tweet.show');
+    Route::get('/tweets/{tweet}/edit', [TweetController::class, 'edit'])->name('tweet.edit');
+    Route::put('/tweets/{tweet}/update', [TweetController::class, 'update'])->name('tweet.update');
+    Route::delete('/tweets/{tweet}/delete', [TweetController::class, 'destroy'])->name('tweet.destroy');
 
     Route::post('/comments', [CommentController::class, 'store'])->name('comment.store');
 
@@ -47,6 +50,7 @@ Route::middleware('auth')->group(function() {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// TODO: remove
 Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/send-emails', function () {
         $emails = \App\Models\User::pluck('email');

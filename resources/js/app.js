@@ -5,7 +5,7 @@
  */
 
 import './bootstrap';
-// import Vue from 'vue';
+// import Vue from './vue';
 // window.Vue = require('vue').default;
 import { createApp } from 'vue';
 import {getElement} from "bootstrap/js/src/util/index.js";
@@ -15,8 +15,6 @@ import {getElement} from "bootstrap/js/src/util/index.js";
  * registering components with the application instance so they are ready
  * to use in your application's views. An example is included for you.
  */
-
-const app = createApp({});
 
 // import ExampleComponent from './components/ExampleComponent.vue';
 // app.component('example-component', ExampleComponent);
@@ -39,13 +37,19 @@ const app = createApp({});
  * scaffolding. Otherwise, you will need to add an element yourself.
  */
 
+// const app = createApp({
+//     el: '#app',
+//     components: { TestComponent },
+//     data: {
+//         messages: []
+//     }
+// });
+// new Vue({
+//     created() {
+//         Echo.private('notification')
+//             .listen('MessageNotification', (e) => {
+//                 app.messages.push(e.message())
+//             });
+//     }
+// });
 
-app.mount('#app')
-new Vue({
-    created() {
-        Echo.private('notification')
-            .listen('MessageNotification', (e) => {
-                alert(e.message);
-            });
-    }
-});

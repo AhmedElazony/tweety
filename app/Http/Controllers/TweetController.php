@@ -41,4 +41,29 @@ class TweetController extends Controller
         event(new \App\Events\MessageNotification($tweet->user, 'Published a Tweet'));
         return redirect('/home')->with('success', 'Your tweet has been published!');
     }
+
+    public function edit(Tweet $tweet)
+    {
+        return view('tweets.edit', [
+            'tweet' => $tweet
+        ]);
+    }
+
+    public function update(Tweet $tweet)
+    {
+        $attributes = request()->validate([
+            'body' => 'required|max:225'
+        ]);
+
+        $tweet->update($attributes);
+
+        return redirect('/tweets/'.$tweet->id);
+    }
+
+    public function destroy(Tweet $tweet)
+    {
+        $tweet->delete();
+
+        return back()->with('success', 'tweet deleted!');
+    }
 }

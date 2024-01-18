@@ -1,8 +1,12 @@
 <div class="border border-blue-400 rounded-2xl px-8 py-6 mb-8">
-    <form action="/tweets" method="POST">
+    <form action="/tweets{{str_contains(request()->url(), 'edit') ? "/$tweet->id/update" : ''}}" method="POST">
         @csrf
+        @if(str_contains(request()->url(), 'edit'))
+            @method('PUT')
+        @endif
 
-        <textarea name="body" id="body" class="w-full border-transparent" required placeholder="what's up?"></textarea>
+
+        <textarea name="body" id="body" class="w-full border-transparent" required placeholder="what's up?">{{ $tweet->body ?? '' }}</textarea>
 
         <hr class="my-3">
 

@@ -25,8 +25,9 @@
             </div>
         </a>
 
-        {{-- like --}}
+
         <div class="flex mt-1 items-center">
+            {{-- like --}}
             <form action="/tweets/{{$tweet->id}}/like" method="POST" class="flex items-center mr-4">
                 @csrf
 
@@ -61,6 +62,12 @@
             <span class="ml-1">
                 {{ $tweet->comments()->count() ?? 0 }}
             </span>
+
+            <div class="flex bottom-3 right-3 py-2 px-4">
+                @if($tweet->user->is(currentUser()))
+                <x-tweet-dropdown :tweet="$tweet" />
+                @endif
+            </div>
         </div>
     </div>
 
