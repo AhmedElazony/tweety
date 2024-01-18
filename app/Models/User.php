@@ -85,9 +85,21 @@ class User extends Authenticatable implements EmailVerification
         return Tweet::whereIn('tweets.user_id', $followingIds)
             ->orWhere('tweets.user_id', $this->id)
             ->withLikes()
-            ->withUsersSharing()
             ->with('user')
             ->latest('tweets.created_at')
+            ->paginate(20);
+    }
+
+    public function sharedTweetsTimeline()
+    {
+        $followingIds = $this->following()->pluck('id');
+
+        return Tweet::whereIn('tweets.user_id', $followingIds)
+            ->orWhere('tweets.user_id', $this->id)
+            ->withLikes()
+            ->withUsersSharing()
+            ->with('user')
+            ->latest('shares.created_at')
             ->paginate(20);
     }
 

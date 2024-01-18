@@ -13,14 +13,12 @@
 
     <div>
         <div class="flex items-center">
-            <div>
-                <a class="hover:underline" href="{{ route('profile.show', $tweet->user->username) }}">
-                    <h5 class="font-bold">{{ $tweet->user->name }}</h5>
-                </a>
-                @if($tweet->user->slogan ?? false)
-                    <img src="{{ asset($tweet->user->slogan) }}" class="ml-1" alt="" width="23" height="23">
-                @endif
-            </div>
+            <a class="hover:underline" href="{{ route('profile.show', $tweet->user->username) }}">
+                <h5 class="font-bold">{{ $tweet->user->name }}</h5>
+            </a>
+            @if($tweet->user->slogan ?? false)
+                <img src="{{ asset($tweet->user->slogan) }}" class="ml-1" alt="" width="23" height="23">
+            @endif
         </div>
         <a href="{{ route('tweet.show', $tweet->id) }}">
             <p class="text-xs text-gray-800">{{ '@'.$tweet->user->username  }}</p>
@@ -75,7 +73,7 @@
                 @csrf
 
                 <button type="submit">
-                    <x-share :tweet="$tweet" />
+                    <x-share-button :tweet="$tweet" />
                 </button>
                 <p class="ml-1">{{$tweet->shares()->count() ?? 0}}</p>
             </form>

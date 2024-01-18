@@ -66,7 +66,6 @@ class Tweet extends Model
     public function scopeWithUsersSharing(Builder $query)
     {
         $query->join('shares', 'shares.tweet_id', '=', 'tweets.id')
-            ->select(['tweets.*', 'likes', 'dislikes', 'shares.user_id as sharing_user', 'shares.created_at'])
-            ->latest('shares.created_at');
+            ->select(['tweets.*', 'likes', 'dislikes', 'shares.user_id as sharing_user']);
     }
 }
