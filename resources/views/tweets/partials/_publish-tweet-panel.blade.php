@@ -6,7 +6,7 @@
         @endif
 
 
-        <textarea name="body" id="body" class="w-full border-transparent" required placeholder="what's up?">{{ $tweet->body ?? '' }}</textarea>
+        <textarea name="body" id="body" class="w-full border-transparent" required placeholder="what's up?">{{ strip_tags($tweet->body ?? '') ?? '' }}</textarea>
 
         <hr class="my-3">
 

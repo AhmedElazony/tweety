@@ -4,7 +4,7 @@
     @if(request()->routeIs('followers'))
         <h1 class="font-bold text-xl mb-2 underline">Followers</h1>
     @else
-        <h2 class="font-bold text-xl mb-2 underline">Following</h2>
+        <h1 class="font-bold text-xl mb-2 underline">Following</h1>
     @endif
 
     @foreach ($users as $user)

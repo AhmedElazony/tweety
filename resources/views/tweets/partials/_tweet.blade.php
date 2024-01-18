@@ -19,7 +19,7 @@
             <h6 class="text-xs mb-4">{{ $tweet->created_at->diffForHumans() }}</h6>
 
             <div>
-                <p class="text-sm">
+                <p class="text-sm font-semibold">
                     {!! $tweet->body !!}
                 </p>
             </div>

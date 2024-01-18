@@ -23,7 +23,7 @@ class Tweet extends Model
     public function body(): Attribute
     {
         return Attribute::make(
-            set: fn (string $value) => $this->body = nl2br(htmlentities($value)),
+            set: fn (string $value) => $this->body = nl2br(strip_tags($value, ['<br>'])),
         );
     }
 
