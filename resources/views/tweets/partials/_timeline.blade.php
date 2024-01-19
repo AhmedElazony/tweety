@@ -1,6 +1,6 @@
 <div class="border border-gray-300 rounded-2xl mt-5">
     @forelse ($tweets as $tweet)
-        @if($tweet->isShared())
+        @if($tweet->isShared() && ! request()->routeIs('profile.show'))
             @foreach($tweet->shares()->orderByDesc($tweet->sharedAt())->pluck('user_id') as $user)
                 @include('tweets.partials._tweet', [
                     'sharingUser' => \App\Models\User::find($user)

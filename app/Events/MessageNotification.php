@@ -18,14 +18,8 @@ class MessageNotification implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public function __construct(public User $user, public string $message)
+    public function __construct(public string $message)
     {
-        $this->message = "$this->user $message";
-        $followers = $this->user->followers;
-
-        foreach ($followers as $follower) {
-            $follower->notify($this->message);
-        }
     }
 
     /**
@@ -36,5 +30,10 @@ class MessageNotification implements ShouldBroadcast
     public function broadcastOn(): PrivateChannel|array
     {
         return new PrivateChannel('notification');
+    }
+
+    public function broadcastAs()
+    {
+        return 'message-notification';
     }
 }

@@ -41,7 +41,6 @@ class TweetController extends Controller
             'body' => $attributes['body']
         ]);
 
-        event(new \App\Events\MessageNotification($tweet->user, 'Published a Tweet'));
         return redirect('/home')->with('success', 'Your tweet has been published!');
     }
 
