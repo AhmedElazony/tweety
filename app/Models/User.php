@@ -86,7 +86,7 @@ class User extends Authenticatable implements EmailVerification
             ->orWhere('tweets.user_id', $this->id)
             ->withLikes()
             ->with('user')
-            ->latest('tweets.created_at')
+            ->latest()
             ->paginate(20);
     }
 
@@ -97,9 +97,9 @@ class User extends Authenticatable implements EmailVerification
         return Tweet::whereIn('tweets.user_id', $followingIds)
             ->orWhere('tweets.user_id', $this->id)
             ->withLikes()
-            ->withUsersSharing()
             ->with('user')
-            ->latest('shares.created_at')
+            ->withUsersSharing()
+            ->latest()
             ->paginate(20);
     }
 

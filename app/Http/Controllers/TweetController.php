@@ -12,12 +12,9 @@ class TweetController extends Controller
     public function index()
     {
         $tweets = currentUser()->timeline();
-        $sharedTweets = currentUser()->sharedTweetsTimeline();
-
-        $timeline = $tweets->merge($sharedTweets);
 
         return view('tweets.index', [
-            'tweets' => $timeline
+            'tweets' => $tweets
         ]);
     }
 

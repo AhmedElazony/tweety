@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder;
+use MongoDB\BSON\Timestamp;
 
 class Tweet extends Model
 {
@@ -61,6 +64,11 @@ class Tweet extends Model
         return (bool) $this->shares()
             ->where('tweet_id', '=', $this->id)
             ->count();
+    }
+
+    public function sharedAt(): string
+    {
+        return $this->shares()->createdAt();
     }
 
     public function scopeWithUsersSharing(Builder $query)

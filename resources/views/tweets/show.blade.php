@@ -67,7 +67,7 @@
                     @csrf
 
                     <button type="submit">
-                        <x-share :tweet="$tweet" />
+                        <x-share-button :tweet="$tweet" />
                     </button>
                     <p class="ml-1">{{$tweet->shares()->count() ?? 0}}</p>
                 </form>

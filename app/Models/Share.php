@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Share extends Model
 {
@@ -12,13 +14,13 @@ class Share extends Model
 
     protected $guarded = [];
 
-    public function tweet(): BelongsTo
+    public function tweet(): HasMany
     {
-        return $this->belongsTo(Tweet::class);
+        return $this->hasMany(Tweet::class);
     }
 
-    public function user(): BelongsTo
+    public function user(): HasMany
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(User::class);
     }
 }

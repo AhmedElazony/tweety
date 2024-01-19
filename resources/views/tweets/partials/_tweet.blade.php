@@ -1,10 +1,10 @@
-@if($sharingUser = \App\Models\User::find($tweet->sharing_user) ?? false)
+@if($sharingUser ?? false)
     <div class=" text-sm font-semibold ml-2">
         <p><a class="hover:underline text-gray-700" href="{{$sharingUser->path()}}">{{'@'.$sharingUser->username}}</a> shared this tweet.</p>
     </div>
 @endif
 
-<div class="flex p-4 {{ $loop->last ? '' : 'border-b border-b-gray' }}">
+<div class="flex p-4 {{ $loop->last && !($tweet->isShared()) ? '' : 'border-b border-b-gray' }}">
     <div class="mr-2 flex-shrink-0">
         <a href="{{ route('profile.show', $tweet->user->username) }}">
             <img src="{{ $tweet->user->avatar ?? asset('images/default-avatar.jpg') }}" alt="user avatar" class="rounded-full mr-2 w-11 h-11" width="40" height="40">

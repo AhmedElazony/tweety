@@ -2,7 +2,7 @@
     <h3 class="font-bold text-xl mb-4">Follows</h3>
 
     <ul>
-        @forelse (currentUser()->follows() as $user)
+        @forelse (currentUser()->follows()->random(fn(\Illuminate\Support\Collection $items) => min(10, count($items))) ?? [] as $user)
             <li class="{{ $loop->last ? '' : 'mb-4'}}">
                 <div class="flex items-center">
                     <a href="{{ route('profile.show', $user->username) }}" class="flex items-center text-sm hover:underline">
