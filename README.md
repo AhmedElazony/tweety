@@ -13,7 +13,6 @@ Implements:
 - Following and Unfollowing System.
 
 <img src="public/images/App-Screenshot.png">
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
 ### Try It
 - **[Try The App](https://tweety.ahmedelazony.tech)**
