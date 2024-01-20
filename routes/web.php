@@ -52,17 +52,5 @@ Route::middleware('auth')->group(function() {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// TODO: remove
-Route::middleware(['auth', 'verified', 'admin'])->group(function () {
-    Route::get('/send-emails', function () {
-        $emails = \App\Models\User::pluck('email');
-
-        foreach($emails as $email) {
-            \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\AdminMail());
-        }
-
-       return back();
-    });
-});
 
 require __DIR__.'/auth.php';
