@@ -68,4 +68,15 @@
     </div>
 </body>
 {{--<script src="{{ asset('build/assets/app-b1941ff8.js') }}"></script>--}}
+<script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js")
+        .then((registration) => {
+          console.log("Service Worker registered:", registration);
+        })
+        .catch((error) => {
+          console.log("Service Worker registration failed:", error);
+        });
+    }
+  </script>
 </html>
