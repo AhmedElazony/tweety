@@ -10,8 +10,8 @@ class CommentController extends Controller
     {
         $attributes = request()->validate([
             'body' => 'string|max:255',
-            'tweet_id' => 'integer',
-            'user_id' => 'integer'
+            'tweet_id' => 'integer|exists:tweets,id',
+            'user_id' => 'integer|exists:users,id'
         ]);
 
         Comment::create($attributes);

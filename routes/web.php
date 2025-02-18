@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/home', [TweetController::class, 'index'])->name('home');
     Route::post('/tweets', [TweetController::class, 'store'])->name('tweet.store');
 
@@ -46,7 +46,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/explore', ExploreController::class)->name('explore');
 });
 
-Route::middleware('auth')->group(function() {
+Route::middleware('auth')->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
