@@ -42,12 +42,12 @@ class ProfileController extends Controller
     {
         $attributes = $request->validated();
 
-        if (! Hash::check($attributes['password'], currentUser()->password)) {
+        if (!Hash::check($attributes['password'], currentUser()->password)) {
             return Redirect::back()->withErrors(['password' => 'Password is Incorrect!']);
         }
 
         if ($request->has('avatar')) {
-            $attributes['avatar'] = request()->file('avatar')->store('avatars');
+            $attributes['avatar'] = request()->file('avatar')->store('avatars/' . $request->user()->id);
         }
 
         if ($request->user()->isDirty('email')) {
