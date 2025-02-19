@@ -12,8 +12,8 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- Manifest -->
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <!-- PWA -->
+    @laravelPWA
 
     <!-- Scripts -->
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
@@ -68,15 +68,4 @@
     </div>
 </body>
 {{--<script src="{{ asset('build/assets/app-b1941ff8.js') }}"></script>--}}
-<script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js")
-        .then((registration) => {
-          console.log("Service Worker registered:", registration);
-        })
-        .catch((error) => {
-          console.log("Service Worker registration failed:", error);
-        });
-    }
-  </script>
 </html>

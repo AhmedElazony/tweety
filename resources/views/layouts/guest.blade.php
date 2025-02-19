@@ -8,8 +8,8 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Manifest -->
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <!-- PWA -->
+    @laravelPWA
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -33,16 +33,4 @@
         </div>
     </div>
 </body>
-<script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js")
-        .then((registration) => {
-          console.log("Service Worker registered:", registration);
-        })
-        .catch((error) => {
-          console.log("Service Worker registration failed:", error);
-        });
-    }
-  </script>
-
 </html>
