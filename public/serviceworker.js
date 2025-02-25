@@ -76,48 +76,19 @@ self.addEventListener("fetch", (event) => {
 
 // push notifications
 self.addEventListener("push", function (event) {
-    console.log("Push message received", event);
+    if (!event.data) return;
 
-    if (!(self.Notification && self.Notification.permission === "granted")) {
-        console.log("Notifications not granted");
-        return;
-    }
+    const data = event.data.json();
 
-    try {
-        const data = event.data.json();
-        console.log("Push data:", data);
-
-        event.waitUntil(
-            self.registration.showNotification(data.title, {
-                body: data.body,
-                icon: data.icon,
-                actions: data.actions,
-                data: data.data,
-            })
-        );
-    } catch (e) {
-        console.error("Error processing push notification:", e);
-    }
+    event.waitUntil(
+        self.registration.showNotification(data.title, {
+            body: data.body,
+            icon: data.icon || "/icon.png",
+        })
+    );
 });
 
 self.addEventListener("notificationclick", function (event) {
     event.notification.close();
-
-    // Handle notification click
-    const data = event.notification.data || {};
-    const url = data.url || "/";
-
-    event.waitUntil(
-        clients.matchAll({ type: "window" }).then(function (clientList) {
-            // If a window is already open, focus it
-            for (let i = 0; i < clientList.length; i++) {
-                const client = clientList[i];
-                if (client.url === url && "focus" in client) {
-                    return client.focus();
-                }
-            }
-            // Otherwise open a new window
-            return clients.openWindow(url);
-        })
-    );
+    event.waitUntil(clients.openWindow("/"));
 });
