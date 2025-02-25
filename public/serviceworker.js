@@ -13,13 +13,30 @@ var filesToCache = [
     "/images/icons/icon-512x512.png",
 ];
 
-// Cache on install - but don't try to cache the root URL yet
+// Cache on install with better error handling
 self.addEventListener("install", (event) => {
     self.skipWaiting();
     event.waitUntil(
         caches.open(staticCacheName).then(function (cache) {
             console.log("Caching app assets");
-            return cache.addAll(filesToCache);
+
+            // Use individual promises for each resource
+            return Promise.allSettled(
+                filesToCache.map((url) => {
+                    return fetch(url)
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error(`Failed to fetch ${url}`);
+                            }
+                            return cache.put(url, response);
+                        })
+                        .catch((error) => {
+                            console.warn(`Caching failed for ${url}:`, error);
+                            // Continue with other resources
+                            return Promise.resolve();
+                        });
+                })
+            );
         })
     );
 });
@@ -63,7 +80,8 @@ self.addEventListener("fetch", (event) => {
                 return (
                     response ||
                     fetch(event.request).catch(() => {
-                        // Return null or appropriate fallback for non-HTML resources
+                        // For images, could return a default image
+                        // For now, just return null
                         return null;
                     })
                 );
