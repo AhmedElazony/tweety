@@ -58,9 +58,9 @@ Route::get('/push/key', function () {
     ]);
 });
 
-Route::post('/push/subscribe', function (Request $request) {
-    $this->validate($request, [
-        'subscription' => 'required'
+Route::post('/push/subscribe', static function (Request $request) {
+    $request->validate([
+        'subscription' => 'required',
     ]);
 
     $subscription = $request->subscription;
