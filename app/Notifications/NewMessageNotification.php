@@ -11,8 +11,6 @@ use NotificationChannels\WebPush\WebPushMessage;
 
 class NewMessageNotification extends Notification
 {
-    use Queueable;
-
     public function __construct(private $message)
     {
     }

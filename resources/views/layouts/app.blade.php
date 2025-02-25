@@ -71,7 +71,7 @@
 <script>
     if ('serviceWorker' in navigator && 'PushManager' in window) {
         window.addEventListener('load', function() {
-            navigator.serviceWorker.register('/sw.js')
+            navigator.serviceWorker.register('/serviceworker.js')
                 .then(function(registration) {
                     return registration.pushManager.subscribe({
                         userVisibleOnly: true,
