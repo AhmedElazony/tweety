@@ -13,35 +13,13 @@ var filesToCache = [
     "/images/icons/icon-512x512.png",
 ];
 
-// Cache on install
+// Cache on install - but don't try to cache the root URL yet
 self.addEventListener("install", (event) => {
-    this.skipWaiting();
+    self.skipWaiting();
     event.waitUntil(
-        caches.open("tweety-cache-v1").then(function (cache) {
-            const resources = [
-                "/",
-                // Add other resources you want to cache
-            ];
-
-            // Cache resources with error handling
-            return Promise.all(
-                resources.map((url) => {
-                    return fetch(url)
-                        .then((response) => {
-                            if (!response.ok) {
-                                throw new Error(
-                                    `Failed to cache ${url}: ${response.status} ${response.statusText}`
-                                );
-                            }
-                            return cache.put(url, response);
-                        })
-                        .catch((error) => {
-                            console.error("Caching failed for:", url, error);
-                            // Continue with other resources even if one fails
-                            return Promise.resolve();
-                        });
-                })
-            );
+        caches.open(staticCacheName).then(function (cache) {
+            console.log("Caching app assets");
+            return cache.addAll(filesToCache);
         })
     );
 });
@@ -58,20 +36,40 @@ self.addEventListener("activate", (event) => {
             );
         })
     );
+    // Take control immediately
+    return self.clients.claim();
 });
 
-// Serve from Cache
+// Modified fetch handler - network first for navigation requests
 self.addEventListener("fetch", (event) => {
-    event.respondWith(
-        caches
-            .match(event.request)
-            .then((response) => {
-                return response || fetch(event.request);
+    // Check if this is a navigation request (for HTML)
+    if (event.request.mode === "navigate") {
+        event.respondWith(
+            // Try network first, fall back to cache
+            fetch(event.request).catch(() => {
+                return caches.match(event.request).then((cachedResponse) => {
+                    if (cachedResponse) {
+                        return cachedResponse;
+                    }
+                    // If not in cache, try the offline page
+                    return caches.match("/offline");
+                });
             })
-            .catch(() => {
-                return caches.match("offline");
+        );
+    } else {
+        // For non-navigation requests, try cache first
+        event.respondWith(
+            caches.match(event.request).then((response) => {
+                return (
+                    response ||
+                    fetch(event.request).catch(() => {
+                        // Return null or appropriate fallback for non-HTML resources
+                        return null;
+                    })
+                );
             })
-    );
+        );
+    }
 });
 
 // push notifications
