@@ -59,7 +59,7 @@ Route::get('/push/key', function () {
 });
 
 Route::post('/push/subscribe', function (Request $request) {
-    $request->validate([
+    $this->validate($request, [
         'subscription' => 'required'
     ]);
 
@@ -84,6 +84,18 @@ Route::get('/test-notification', function () {
     $user->notify(new \App\Notifications\NewMessageNotification($message));
 
     return 'Notification sent!';
+});
+
+Route::get('/check-vapid-key', function () {
+    $publicKey = config('webpush.vapid.public_key');
+    $privateKey = config('webpush.vapid.private_key');
+
+    return response()->json([
+        'public_key' => $publicKey,
+        'public_key_length' => strlen($publicKey),
+        'private_key_length' => strlen($privateKey),
+        'public_key_valid_format' => (bool) preg_match('/^[A-Za-z0-9\-_]+$/', $publicKey),
+    ]);
 });
 
 require __DIR__ . '/auth.php';
