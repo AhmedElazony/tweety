@@ -17,8 +17,33 @@ var filesToCache = [
 self.addEventListener("install", (event) => {
     this.skipWaiting();
     event.waitUntil(
-        caches.open(staticCacheName).then((cache) => {
-            return cache.addAll(filesToCache);
+        caches.open("tweety-cache-v1").then(function (cache) {
+            const resources = [
+                "/",
+                "/css/app.css",
+                "/js/app.js",
+                // Add other resources you want to cache
+            ];
+
+            // Cache resources with error handling
+            return Promise.all(
+                resources.map((url) => {
+                    return fetch(url)
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error(
+                                    `Failed to cache ${url}: ${response.status} ${response.statusText}`
+                                );
+                            }
+                            return cache.put(url, response);
+                        })
+                        .catch((error) => {
+                            console.error("Caching failed for:", url, error);
+                            // Continue with other resources even if one fails
+                            return Promise.resolve();
+                        });
+                })
+            );
         })
     );
 });
