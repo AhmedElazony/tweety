@@ -15,101 +15,66 @@ function urlBase64ToUint8Array(base64String) {
 
 async function subscribeToPush() {
     try {
-        // Increase initial wait time for service worker
+        // Wait for the service worker to be fully active
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
         const registration = await navigator.serviceWorker.ready;
         console.log("Service Worker ready, attempting subscription...");
 
-        // Check if push manager is available
-        if (!registration.pushManager) {
-            throw new Error("Push manager not available");
-        }
-
-        // Check for existing subscription but don't unsubscribe immediately
+        // Check for existing subscription
         let subscription = await registration.pushManager.getSubscription();
         if (subscription) {
-            try {
-                // Verify if existing subscription is still valid
-                await subscription.getKey("p256dh");
-                console.log("Using existing valid subscription");
-                return await updateSubscriptionOnServer(subscription);
-            } catch (e) {
-                console.log("Existing subscription invalid, creating new one");
-                await subscription.unsubscribe();
-            }
+            console.log("Using existing subscription");
+            return await updateSubscriptionOnServer(subscription);
         }
 
-        // Get VAPID key with increased timeout
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 10000);
+        // Get VAPID key - remove the AbortController to prevent AbortError
+        console.log("Fetching VAPID key...");
+        const response = await fetch("/push/key", {
+            headers: {
+                Accept: "application/json",
+                "Cache-Control": "no-cache",
+            },
+        });
 
+        if (!response.ok) {
+            throw new Error(`Failed to fetch VAPID key: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Received key data:", data);
+
+        if (!data.key || typeof data.key !== "string") {
+            throw new Error("Invalid VAPID key format received from server");
+        }
+
+        const convertedKey = urlBase64ToUint8Array(data.key);
+        console.log("Converted VAPID key, attempting to subscribe...");
+
+        // Subscribe with just one attempt first
         try {
-            const response = await fetch("/push/key", {
-                signal: controller.signal,
-                headers: {
-                    Accept: "application/json",
-                    "Cache-Control": "no-cache",
-                },
+            subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: convertedKey,
             });
-            clearTimeout(timeout);
 
-            if (!response.ok) {
-                throw new Error(
-                    `Failed to fetch VAPID key: ${response.status}`
-                );
+            console.log("Push subscription created successfully");
+            return await updateSubscriptionOnServer(subscription);
+        } catch (error) {
+            console.error("Initial subscription attempt failed:", error);
+
+            if (error.name === "NotAllowedError") {
+                throw new Error("Push notification permission denied");
             }
 
-            const data = await response.json();
-            if (!data.key || typeof data.key !== "string") {
-                throw new Error(
-                    "Invalid VAPID key format received from server"
-                );
-            }
+            // Log more details about the error
+            console.error("Error details:", {
+                name: error.name,
+                message: error.message,
+                stack: error.stack,
+            });
 
-            console.log("VAPID key validation passed");
-            const convertedKey = urlBase64ToUint8Array(data.key);
-
-            // Add exponential backoff retry logic
-            let retries = 3;
-            let delay = 1000;
-
-            while (retries > 0) {
-                try {
-                    subscription = await registration.pushManager.subscribe({
-                        userVisibleOnly: true,
-                        applicationServerKey: convertedKey,
-                    });
-
-                    if (!subscription) {
-                        throw new Error("Subscription creation returned null");
-                    }
-
-                    console.log("Push subscription successfully created");
-                    return await updateSubscriptionOnServer(subscription);
-                } catch (error) {
-                    retries--;
-                    if (error.name === "NotAllowedError") {
-                        throw new Error("Push notification permission denied");
-                    }
-                    if (retries === 0) {
-                        console.error(
-                            "Final subscription attempt failed:",
-                            error
-                        );
-                        throw error;
-                    }
-                    console.log(
-                        `Subscribe attempt failed, retrying in ${
-                            delay / 1000
-                        }s... (${retries} attempts left)`
-                    );
-                    await new Promise((resolve) => setTimeout(resolve, delay));
-                    delay *= 2; // Exponential backoff
-                }
-            }
-        } finally {
-            clearTimeout(timeout);
+            throw error;
         }
     } catch (error) {
         console.error("Push subscription error details:", {

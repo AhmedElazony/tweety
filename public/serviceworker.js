@@ -99,3 +99,25 @@ self.addEventListener("push", function (event) {
         console.error("Error processing push notification:", e);
     }
 });
+
+self.addEventListener("notificationclick", function (event) {
+    event.notification.close();
+
+    // Handle notification click
+    const data = event.notification.data || {};
+    const url = data.url || "/";
+
+    event.waitUntil(
+        clients.matchAll({ type: "window" }).then(function (clientList) {
+            // If a window is already open, focus it
+            for (let i = 0; i < clientList.length; i++) {
+                const client = clientList[i];
+                if (client.url === url && "focus" in client) {
+                    return client.focus();
+                }
+            }
+            // Otherwise open a new window
+            return clients.openWindow(url);
+        })
+    );
+});

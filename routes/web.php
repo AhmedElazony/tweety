@@ -52,7 +52,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// routes/web.php
 Route::get('/push/key', function () {
     return response()->json([
         'key' => config('webpush.vapid.public_key')
