@@ -70,28 +70,47 @@
 {{--<script src="{{ asset('build/assets/app-b1941ff8.js') }}"></script>--}}
 <script>
     if ('serviceWorker' in navigator && 'PushManager' in window) {
-        window.addEventListener('load', function() {
-            navigator.serviceWorker.register('/serviceworker.js')
-                .then(function(registration) {
-                    return registration.pushManager.subscribe({
-                        userVisibleOnly: true,
-                        applicationServerKey: '{{ config('webpush.vapid.public_key') }}'
-                    });
-                })
-                .then(function(subscription) {
-                    // Send subscription info to server
-                    fetch('/push-subscription', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify(subscription)
-                    });
-                })
-                .catch(function(error) {
-                    console.error('Service Worker Error:', error);
+        window.addEventListener('load', async function() {
+            try {
+                // First register the service worker
+                const registration = await navigator.serviceWorker.register('/serviceworker.js');
+                console.log('ServiceWorker registration successful');
+
+                // Wait for the service worker to be ready
+                await navigator.serviceWorker.ready;
+                console.log('ServiceWorker is ready');
+
+                // Request notification permission
+                const permission = await Notification.requestPermission();
+                if (permission !== 'granted') {
+                    throw new Error('Notification permission denied');
+                }
+
+                // Now try to subscribe to push notifications
+                const subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: '{{ config('webpush.vapid.public_key') }}'
                 });
+                console.log('Push subscription successful:', subscription);
+
+                // Send subscription to server
+                const response = await fetch('/push-subscription', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify(subscription)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to send subscription to server');
+                }
+                console.log('Subscription sent to server successfully');
+
+            } catch (error) {
+                console.error('Service Worker Error:', error.message);
+            }
         });
     }
 </script>
