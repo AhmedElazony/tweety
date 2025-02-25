@@ -28,13 +28,20 @@
                 <p class="text-sm text-gray-700">{{ '@'.$user->username }}</p>
             </div>
 
-            <div class="flex">
+            <div>
                 @if(currentUser()->is($user))
                     <a href="{{ route('profile.edit') }}" class="rounded-full border border-gray-200 text-black text-sm mr-2 py-2 px-4 hover:bg-gray-100">Edit Profile</a>
                 @elseif(currentUser()->isFollowing($user))
                     <x-unfollow-form :user="$user"/>
                 @else
                     <x-follow-form :user="$user"/>
+                @endif
+
+                @if (!currentUser()->is($user))
+                    <a href="{{ route('user', ['id' => $user->id]) }}"
+                        class="bg-blue-700 rounded-full shadow text-white text-sm py-2 px-4 hover:bg-blue-600">
+                        Message
+                    </a>
                 @endif
             </div>
         </div>
