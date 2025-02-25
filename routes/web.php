@@ -52,14 +52,40 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::post('/push-subscription', function (Request $request) {
-    $request->user()->updatePushSubscription(
-        $request->input('endpoint'),
-        $request->input('keys.p256dh'),
-        $request->input('keys.auth')
+// routes/web.php
+Route::get('/push/key', function () {
+    return response()->json([
+        'key' => env('VAPID_PUBLIC_KEY')
+    ]);
+});
+
+Route::post('/push/subscribe', function (Request $request) {
+    $this->validate($request, [
+        'subscription' => 'required'
+    ]);
+
+    $subscription = $request->subscription;
+    auth()->user()->updatePushSubscription(
+        $subscription['endpoint'],
+        $subscription['keys']['p256dh'],
+        $subscription['keys']['auth']
     );
 
     return response()->json(['success' => true]);
-})->middleware('auth');
+});
+
+Route::get('/test-notification', function () {
+    $user = Auth::user();
+    $message = new \App\Models\ChMessage([
+        'id' => 1,
+        'from_id' => 7,
+        'to_id' => $user->id,
+        'body' => 'Test notification message'
+    ]);
+
+    $user->notify(new \App\Notifications\NewMessageNotification($message));
+
+    return 'Notification sent!';
+});
 
 require __DIR__ . '/auth.php';

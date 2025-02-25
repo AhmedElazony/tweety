@@ -17,15 +17,18 @@ class NewMessageNotification extends Notification
 
     public function via($notifiable)
     {
-        return [WebPushChannel::class];
+        return $notifiable->PushSubscriptions()->exists() ? [WebPushChannel::class] : [];
     }
 
     public function toWebPush($notifiable, $notification)
     {
+        $messageText = $this->message->body ?: 'New message received';
+        $senderName = \App\Models\User::find($this->message->from_id)->name ?? 'Someone';
+
         return (new WebPushMessage)
-            ->title('New Message')
+            ->title('New Message from ' . $senderName)
             ->icon('/notification-icon.png')
-            ->body($this->message)
+            ->body($messageText)
             ->action('View message', 'view_message')
             ->data(['message_id' => $this->message->id]);
     }

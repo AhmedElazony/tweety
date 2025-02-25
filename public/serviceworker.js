@@ -53,27 +53,26 @@ self.addEventListener("fetch", (event) => {
 
 // push notifications
 self.addEventListener("push", function (event) {
+    console.log("Push message received", event);
+
     if (!(self.Notification && self.Notification.permission === "granted")) {
+        console.log("Notifications not granted");
         return;
     }
 
-    const data = event.data?.json() ?? {};
+    try {
+        const data = event.data.json();
+        console.log("Push data:", data);
 
-    event.waitUntil(
-        self.registration.showNotification(data.title, {
-            body: data.body,
-            icon: data.icon,
-            actions: data.actions,
-            data: data.data,
-        })
-    );
-});
-
-self.addEventListener("notificationclick", function (event) {
-    event.notification.close();
-
-    if (event.action === "view_message") {
-        const messageUrl = "/chats"; // Adjust this URL as needed
-        event.waitUntil(clients.openWindow(messageUrl));
+        event.waitUntil(
+            self.registration.showNotification(data.title, {
+                body: data.body,
+                icon: data.icon,
+                actions: data.actions,
+                data: data.data,
+            })
+        );
+    } catch (e) {
+        console.error("Error processing push notification:", e);
     }
 });
