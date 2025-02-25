@@ -315,22 +315,3 @@ if ("serviceWorker" in navigator && "PushManager" in window) {
 } else {
     console.error("Service Worker or Push API not supported in this browser");
 }
-
-// Add helper function to test notifications manually
-window.testNotification = function () {
-    console.log("Manual notification test triggered");
-    if (!("Notification" in window)) {
-        alert("This browser does not support notifications");
-        return;
-    }
-
-    if (Notification.permission === "granted") {
-        new Notification("Test Notification", {
-            body: "This is a manual test notification",
-            icon: "/images/icons/icon-192x192.png",
-        });
-        console.log("Test notification displayed");
-    } else {
-        alert("Notification permission not granted");
-    }
-};
