@@ -77,7 +77,6 @@ Route::post('/push/subscribe', function (Request $request) {
 Route::get('/test-notification', function () {
     $user = Auth::user();
     $message = new \App\Models\ChMessage([
-        'id' => 1,
         'from_id' => 7,
         'to_id' => $user->id,
         'body' => 'Test notification message'
