@@ -20,8 +20,6 @@ self.addEventListener("install", (event) => {
         caches.open("tweety-cache-v1").then(function (cache) {
             const resources = [
                 "/",
-                "/css/app.css",
-                "/js/app.js",
                 // Add other resources you want to cache
             ];
 

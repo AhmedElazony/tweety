@@ -55,12 +55,12 @@ Route::middleware('auth')->group(function () {
 // routes/web.php
 Route::get('/push/key', function () {
     return response()->json([
-        'key' => env('VAPID_PUBLIC_KEY')
+        'key' => config('webpush.vapid.public_key')
     ]);
 });
 
 Route::post('/push/subscribe', function (Request $request) {
-    $this->validate($request, [
+    $request->validate([
         'subscription' => 'required'
     ]);
 
