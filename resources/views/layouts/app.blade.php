@@ -19,6 +19,9 @@
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+
+    <!-- push notifications script -->
+    <script src="{{ asset('js/push-notifications.js') }}" defer></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -68,110 +71,4 @@
     </div>
 </body>
 {{--<script src="{{ asset('build/assets/app-b1941ff8.js') }}"></script>--}}
-<script>
-// Check if service workers are supported
-if ('serviceWorker' in navigator && 'PushManager' in window) {
-    // Register the service worker
-    navigator.serviceWorker.register('/serviceworker.js')
-        .then(function(registration) {
-            console.log('ServiceWorker registered successfully');
-
-            // Ask for notification permission
-            requestNotificationPermission();
-        })
-        .catch(function(error) {
-            console.error('ServiceWorker registration failed:', error);
-        });
-}
-
-// Request permission and subscribe to push
-function requestNotificationPermission() {
-    return new Promise(function(resolve, reject) {
-        Notification.requestPermission(function(permission) {
-            if (permission === 'granted') {
-                console.log('Notification permission granted');
-
-                // Subscribe the user to push notifications
-                subscribeToPush();
-                resolve(true);
-            } else {
-                console.log('Notification permission denied');
-                resolve(false);
-            }
-        });
-    });
-}
-
-// Subscribe to push notifications
-function subscribeToPush() {
-    navigator.serviceWorker.ready
-        .then(function(registration) {
-            // Check if subscription exists
-            return registration.pushManager.getSubscription()
-                .then(function(subscription) {
-                    if (subscription) {
-                        return subscription;
-                    }
-
-                    // Get server's public key
-                    return fetch('/push/key')
-                        .then(function(response) {
-                            return response.json();
-                        })
-                        .then(function(data) {
-                            const vapidPublicKey = data.key;
-
-                            // Convert key to Uint8Array
-                            const convertedKey = urlBase64ToUint8Array(vapidPublicKey);
-
-                            // Subscribe
-                            return registration.pushManager.subscribe({
-                                userVisibleOnly: true,
-                                applicationServerKey: convertedKey
-                            });
-                        });
-                });
-        })
-        .then(function(subscription) {
-            // Send the subscription to your server
-            return fetch('/push/subscribe', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify({
-                    subscription: subscription
-                })
-            });
-        })
-        .then(function(response) {
-            if (response.ok) {
-                console.log('Push subscription saved');
-            } else {
-                console.error('Failed to save push subscription');
-            }
-        })
-        .catch(function(error) {
-            console.error('Error subscribing to push:', error);
-        });
-}
-
-// Helper function to convert the base64 VAPID key to Uint8Array
-function urlBase64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding)
-        .replace(/\-/g, '+')
-        .replace(/_/g, '/');
-
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-
-    for (let i = 0; i <script rawData.length; ++i) {
-        outputArray[i] = rawData.charCodeAt(i);
-    }
-
-    return outputArray;
-}
-</script>
 </html>
