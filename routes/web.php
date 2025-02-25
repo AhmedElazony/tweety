@@ -74,29 +74,4 @@ Route::post('/push/subscribe', static function (Request $request) {
     return response()->json(['success' => true]);
 });
 
-Route::get('/test-notification', function () {
-    $user = Auth::user();
-    $message = new \App\Models\ChMessage([
-        'from_id' => 7,
-        'to_id' => $user->id,
-        'body' => 'Test notification message'
-    ]);
-
-    $user->notify(new \App\Notifications\NewMessageNotification($message));
-
-    return 'Notification sent!';
-});
-
-Route::get('/check-vapid-key', function () {
-    $publicKey = config('webpush.vapid.public_key');
-    $privateKey = config('webpush.vapid.private_key');
-
-    return response()->json([
-        'public_key' => $publicKey,
-        'public_key_length' => strlen($publicKey),
-        'private_key_length' => strlen($privateKey),
-        'public_key_valid_format' => (bool) preg_match('/^[A-Za-z0-9\-_]+$/', $publicKey),
-    ]);
-});
-
 require __DIR__ . '/auth.php';

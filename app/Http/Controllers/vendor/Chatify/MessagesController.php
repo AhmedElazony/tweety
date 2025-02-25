@@ -142,18 +142,10 @@ class MessagesController extends Controller
                 ]) : null,
             ]);
 
-            // Add debugging
-            \Log::info('Sending notification for message:', [
-                'message_id' => $message->id,
-                'from' => Auth::user()->id,
-                'to' => $request['id']
-            ]);
-
             // notify the user
             $recipient = User::find($request['id']);
             try {
                 $recipient->notify(new NewMessageNotification($message));
-                \Log::info('Notification sent successfully');
             } catch (\Exception $e) {
                 \Log::error('Failed to send notification:', [
                     'error' => $e->getMessage(),
