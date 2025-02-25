@@ -52,5 +52,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::post('/push-subscription', function (Request $request) {
+    $request->user()->updatePushSubscription(
+        $request->input('endpoint'),
+        $request->input('keys.p256dh'),
+        $request->input('keys.auth')
+    );
 
-require __DIR__.'/auth.php';
+    return response()->json(['success' => true]);
+})->middleware('auth');
+
+require __DIR__ . '/auth.php';

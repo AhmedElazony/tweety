@@ -68,4 +68,31 @@
     </div>
 </body>
 {{--<script src="{{ asset('build/assets/app-b1941ff8.js') }}"></script>--}}
+<script>
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js')
+                .then(function(registration) {
+                    return registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: '{{ config('webpush.vapid.public_key') }}'
+                    });
+                })
+                .then(function(subscription) {
+                    // Send subscription info to server
+                    fetch('/push-subscription', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify(subscription)
+                    });
+                })
+                .catch(function(error) {
+                    console.error('Service Worker Error:', error);
+                });
+        });
+    }
+</script>
 </html>

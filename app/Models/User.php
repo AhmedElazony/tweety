@@ -12,10 +12,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use NotificationChannels\WebPush\HasPushSubscriptions;
 
 class User extends Authenticatable implements EmailVerification
 {
-    use HasApiTokens, HasFactory, MustVerifyEmail, Notifiable, Followable, CanLike, CanShare;
+    use HasApiTokens, HasFactory, MustVerifyEmail, Notifiable, Followable, CanLike, CanShare, HasPushSubscriptions;
 
     /**
      * The attributes that are mass assignable.
@@ -29,6 +30,8 @@ class User extends Authenticatable implements EmailVerification
         'bio',
         'avatar',
         'password',
+        'dark_mode',
+        'messenger_color'
     ];
 
     /**
@@ -54,7 +57,7 @@ class User extends Authenticatable implements EmailVerification
     public function avatar(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => $value === null ? asset('images/default-avatar.jpg') : asset('storage/'.$value)
+            get: fn($value) => $value === null ? asset('images/default-avatar.jpg') : asset('storage/' . $value)
         );
     }
 
