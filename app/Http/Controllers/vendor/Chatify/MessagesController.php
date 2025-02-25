@@ -141,6 +141,26 @@ class MessagesController extends Controller
                     'old_name' => htmlentities(trim($attachment_title), ENT_QUOTES, 'UTF-8'),
                 ]) : null,
             ]);
+
+            // Add debugging
+            \Log::info('Sending notification for message:', [
+                'message_id' => $message->id,
+                'from' => Auth::user()->id,
+                'to' => $request['id']
+            ]);
+
+            // notify the user
+            $recipient = User::find($request['id']);
+            try {
+                $recipient->notify(new NewMessageNotification($message));
+                \Log::info('Notification sent successfully');
+            } catch (\Exception $e) {
+                \Log::error('Failed to send notification:', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+            }
+
             $messageData = Chatify::parseMessage($message);
             if (Auth::user()->id != $request['id']) {
                 Chatify::push("private-chatify." . $request['id'], 'messaging', [
@@ -148,8 +168,7 @@ class MessagesController extends Controller
                     'to_id' => $request['id'],
                     'message' => Chatify::messageCard($messageData, true)
                 ]);
-                $recipient = User::find($request['id']);
-                $recipient->notify(new NewMessageNotification($message));
+
             }
         }
 
