@@ -15,18 +15,28 @@ function urlBase64ToUint8Array(base64String) {
 
 async function subscribeToPush() {
     try {
+        // Wait a bit longer for the service worker to be fully ready
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         const registration = await navigator.serviceWorker.ready;
         console.log("Service Worker ready, attempting subscription...");
 
-        // Check for existing subscription
+        // Check for existing subscription and unsubscribe first
         let subscription = await registration.pushManager.getSubscription();
         if (subscription) {
-            console.log("Existing subscription found:", subscription);
-            return await updateSubscriptionOnServer(subscription);
+            await subscription.unsubscribe();
+            console.log("Unsubscribed from existing subscription");
         }
 
-        // Get VAPID key
-        const response = await fetch("/push/key");
+        // Get VAPID key with timeout
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+
+        const response = await fetch("/push/key", {
+            signal: controller.signal,
+        });
+        clearTimeout(timeout);
+
         if (!response.ok) {
             throw new Error(`Failed to fetch VAPID key: ${response.status}`);
         }
@@ -35,25 +45,40 @@ async function subscribeToPush() {
         if (!data.key) {
             throw new Error("Invalid VAPID key received from server");
         }
-        console.log("VAPID key received");
 
-        // Create new subscription
+        // Log VAPID key format for debugging
+        console.log("VAPID key received, length:", data.key.length);
+
         const convertedKey = urlBase64ToUint8Array(data.key);
-        try {
-            subscription = await registration.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: convertedKey,
-            });
-            console.log("New push subscription created:", subscription);
-            return await updateSubscriptionOnServer(subscription);
-        } catch (error) {
-            if (error.name === "NotAllowedError") {
-                throw new Error("Push notification permission denied");
+
+        // Add retry logic for subscribe
+        let retries = 3;
+        while (retries > 0) {
+            try {
+                subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: convertedKey,
+                });
+                console.log("New push subscription created:", subscription);
+                return await updateSubscriptionOnServer(subscription);
+            } catch (error) {
+                retries--;
+                if (error.name === "NotAllowedError") {
+                    throw new Error("Push notification permission denied");
+                }
+                if (retries === 0) throw error;
+                console.log(
+                    `Subscribe attempt failed, retrying... (${retries} attempts left)`
+                );
+                await new Promise((resolve) => setTimeout(resolve, 1000));
             }
-            throw error;
         }
     } catch (error) {
-        console.error("Push subscription error details:", error);
+        console.error("Push subscription error details:", {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+        });
         throw error;
     }
 }
@@ -110,15 +135,26 @@ function requestNotificationPermission() {
 
 // Initialize push notifications
 if ("serviceWorker" in navigator && "PushManager" in window) {
-    navigator.serviceWorker
-        .register("/serviceworker.js")
-        .then((registration) => {
-            console.log("ServiceWorker registered successfully");
-            return requestNotificationPermission();
-        })
-        .catch((error) => {
-            console.error("ServiceWorker registration failed:", error);
-        });
+    // Ensure page is fully loaded
+    window.addEventListener("load", () => {
+        navigator.serviceWorker
+            .register("/serviceworker.js")
+            .then(async (registration) => {
+                console.log("ServiceWorker registered successfully");
+                // Wait for service worker to be activated
+                if (registration.active) {
+                    return requestNotificationPermission();
+                }
+
+                await new Promise((resolve) => {
+                    registration.addEventListener("activate", () => resolve());
+                });
+                return requestNotificationPermission();
+            })
+            .catch((error) => {
+                console.error("ServiceWorker registration failed:", error);
+            });
+    });
 } else {
     console.log("Push notifications not supported");
 }
