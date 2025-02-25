@@ -8,6 +8,7 @@ use App\Http\Controllers\TweetController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TweetDisLikeController;
 use App\Http\Controllers\TweetLikeController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
