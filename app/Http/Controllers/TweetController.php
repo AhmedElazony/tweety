@@ -33,7 +33,7 @@ class TweetController extends Controller
     public function store()
     {
         $attributes = request()->validate([
-            'body' => 'required|max:225'
+            'body' => 'required|max:1024'
         ]);
 
         $tweet = Tweet::create([
@@ -54,12 +54,12 @@ class TweetController extends Controller
     public function update(Tweet $tweet)
     {
         $attributes = request()->validate([
-            'body' => 'required|max:225'
+            'body' => 'required|max:1024'
         ]);
 
         $tweet->update($attributes);
 
-        return redirect('/tweets/'.$tweet->id);
+        return redirect('/tweets/' . $tweet->id);
     }
 
     public function destroy(Tweet $tweet)
