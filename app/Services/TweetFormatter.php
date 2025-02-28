@@ -36,6 +36,9 @@ class TweetFormatter
 
     public function format(string $text): string
     {
+        // Preserve line breaks before Markdown conversion
+        $text = str_replace("\n", "  \n", $text);
+
         // Convert text with CommonMark
         $html = $this->converter->convert($text)->getContent();
 
@@ -46,31 +49,34 @@ class TweetFormatter
             $html
         );
 
+        // Add RTL support for Arabic text
+        $html = '<div class="whitespace-pre-wrap text-right" dir="rtl">' . $html . '</div>';
+
         return $html;
     }
 
     public function formatWithMentions(string $text): string
     {
-        // Handle @mentions - convert to links
+        // Handle hashtags first to preserve Arabic text
         $appUrl = config('app.url');
-        $text = preg_replace('/(?<=^|[^\w])@([\w]{1,30})/', '[$0](' . $appUrl . '/profiles/$1)', $text);
+        $text = preg_replace('/(?<=^|[^\w])#([\w\p{Arabic}]+)/u', '[$0](' . $appUrl . '/hashtag/$1)', $text);
 
-        // Handle #hashtags - convert to links
-        $text = preg_replace('/(?<=^|[^\w])#([\w]+)/', '[$0](' . $appUrl . '/hashtag/$1)', $text);
+        // Handle @mentions - convert to links
+        $text = preg_replace('/(?<=^|[^\w])@([\w]{1,30})/', '[$0](' . $appUrl . '/profiles/$1)', $text);
 
         // Format with CommonMark
         $html = $this->format($text);
 
-        // Add specific styles for mentions and hashtags
+        // Style mentions and hashtags while preserving Arabic text
         $html = preg_replace(
-            '/<a href="https:\/\/tweety\.ahmedelazony\.me\/([^\/]+)"(.*?)>@(.*?)<\/a>/',
-            '<a href="https://tweety.ahmedelazony.me/$1"$2 class="text-blue-500 font-medium">@$3</a>',
+            '/<a href="[^"]+' . '\/profiles\/(.*?)"([^>]*)>@(.*?)<\/a>/',
+            '<a href="' . $appUrl . '/profiles/$1"$2 class="text-blue-500 font-medium">@$3</a>',
             $html
         );
 
         $html = preg_replace(
-            '/<a href="https:\/\/tweety\.ahmedelazony\.me\/hashtag\/(.*?)"(.*?)>#(.*?)<\/a>/',
-            '<a href="https://tweety.ahmedelazony.me/hashtag/$1"$2 class="text-blue-500 font-medium">#$3</a>',
+            '/<a href="[^"]+' . '\/hashtag\/(.*?)"([^>]*)>#(.*?)<\/a>/',
+            '<a href="' . $appUrl . '/hashtag/$1"$2 class="text-blue-500 font-medium">#$3</a>',
             $html
         );
 
