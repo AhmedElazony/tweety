@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Services\MentionService;
 
 class CommentController extends Controller
 {
@@ -14,7 +15,9 @@ class CommentController extends Controller
             'user_id' => 'integer|exists:users,id'
         ]);
 
-        Comment::create($attributes);
+        $comment = Comment::create($attributes);
+
+        app(MentionService::class)->notifyMentionedUsers($comment);
 
         return back();
     }

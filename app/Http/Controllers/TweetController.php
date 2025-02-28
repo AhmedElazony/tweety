@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Share;
 use App\Models\User;
+use App\Services\MentionService;
 use Illuminate\Http\Request;
 use App\Models\Tweet;
 
@@ -40,6 +41,8 @@ class TweetController extends Controller
             'user_id' => auth()->id(),
             'body' => $attributes['body']
         ]);
+
+        app(MentionService::class)->notifyMentionedUsers($tweet);
 
         return redirect('/home')->with('success', 'Your tweet has been published!');
     }
