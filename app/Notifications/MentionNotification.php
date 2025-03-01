@@ -30,7 +30,7 @@ class MentionNotification extends Notification
         return (new WebPushMessage)
             ->title($author . ' Mentioned You!')
             ->icon('/notification-icon.png')
-            ->body($messageText)
+            ->body(strip_tags($messageText))
             ->action('View message', 'view_message')
             ->data(['message_id' => $this->tweetOrComment->id]);
     }
