@@ -57,16 +57,6 @@ body {
     border-left-color: var(--primary-color) !important;
 }
 
-@layer components {
-    .tweet-text {
-        @apply whitespace-pre-wrap text-right leading-relaxed;
-    }
-
-    .arabic-poetry {
-        @apply font-arabic text-lg leading-loose;
-    }
-}
-
 /*internet connection*/
 .internet-connection {
     display: none;

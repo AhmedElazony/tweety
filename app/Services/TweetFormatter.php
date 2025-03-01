@@ -22,6 +22,9 @@ class TweetFormatter
             'html_input' => 'strip',
             'allow_unsafe_links' => false,
             'max_nesting_level' => 100,
+            'renderer' => [
+                'soft_break' => "<br>",
+            ],
         ]);
 
         // Add the CommonMark core extension
@@ -36,8 +39,15 @@ class TweetFormatter
 
     public function format(string $text): string
     {
+        $text = preg_replace_callback(
+            '/(^|[^\\\\])([-#*_`~\{}|>!+])/m',
+            function ($matches) {
+                return $matches[1] . '\\' . $matches[2];
+            },
+            $text
+        );
         // Preserve line breaks before Markdown conversion
-        $text = str_replace("\n", "  \n", $text);
+        $text = nl2br(htmlspecialchars($text), false);
 
         // Convert text with CommonMark
         $html = $this->converter->convert($text)->getContent();
@@ -50,7 +60,7 @@ class TweetFormatter
         );
 
         // Add RTL support for Arabic text
-        $html = '<div class="whitespace-pre-wrap text-right" dir="rtl">' . $html . '</div>';
+        $html = '<div class="whitespace-pre-wrap arabic-text arabic-container text-right" dir="rtl">' . $html . '</div>';
 
         return $html;
     }

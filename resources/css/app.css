@@ -1,3 +1,75 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    @import url("https://fonts.googleapis.com/css2?family=Noto+Emoji:wght@300..700&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+    /* Base Arabic text container */
+    .arabic-container {
+        @apply bg-white p-6 rounded-lg shadow-sm;
+        font-family: "Noto Emoji", serif;
+    }
+
+    /* Core text styling */
+    .arabic-text {
+        @apply text-base text-right whitespace-pre-wrap;
+        direction: rtl;
+        line-height: 1.8;
+        word-spacing: -0.05em;
+    }
+
+    /* Line break handling */
+    .arabic-text br {
+        content: "";
+        display: block;
+        margin-bottom: 0.75rem;
+    }
+
+    /* Paragraph reset */
+    .arabic-text p {
+        @apply m-0 p-0;
+    }
+
+    /* Link styling */
+    .arabic-text a {
+        @apply text-blue-600 hover:text-blue-800 transition-colors duration-150;
+    }
+
+    /* Mention/hashtag specific styling */
+    .arabic-mention,
+    .arabic-hashtag {
+        @apply font-medium underline decoration-2 hover:decoration-dotted;
+    }
+
+    /* Timestamp styling */
+    .tweet-time {
+        @apply text-gray-500 text-sm mt-2 block;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 640px) {
+        .arabic-text {
+            font-size: 0.9375rem;
+            line-height: 1.7;
+        }
+
+        .arabic-text br {
+            margin-bottom: 0.5rem;
+        }
+    }
+}
+
+/* Base RTL styles */
+[dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+}
+
+/* Preserve newlines in content */
+.whitespace-pre-wrap {
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+}
