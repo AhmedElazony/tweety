@@ -11,16 +11,25 @@ class TweetDisLikeController extends Controller
         if (currentUser()->disLiked($tweet)) {
             return $this->destroy($tweet);
         }
-
+        $wasLiked = currentUser()->liked($tweet);
         currentUser()->dislike($tweet);
 
-        return back();
+        return response()->json([
+            'success' => true,
+            'wasLiked' => $wasLiked,
+            'disliked' => true,
+            'dislikesCount' => $tweet->likes()->where('liked', false)->count()
+        ]);
     }
 
     public function destroy(Tweet $tweet)
     {
         currentUser()->unReact($tweet);
 
-        return back();
+        return response()->json([
+            'success' => true,
+            'disliked' => false,
+            'dislikesCount' => $tweet->likes()->where('liked', false)->count()
+        ]);
     }
 }

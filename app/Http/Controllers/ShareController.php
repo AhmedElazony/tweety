@@ -11,10 +11,18 @@ class ShareController extends Controller
     {
         if (currentUser()->shared($tweet)) {
             currentUser()->unshare($tweet);
-            return back();
+            return response()->json([
+                'success' => true,
+                'shared' => false,
+                'sharesCount' => $tweet->shares->count()
+            ]);
         }
 
         currentUser()->share($tweet);
-        return back();
+        return response()->json([
+            'success' => true,
+            'shared' => true,
+            'sharesCount' => $tweet->shares->count()
+        ]);
     }
 }

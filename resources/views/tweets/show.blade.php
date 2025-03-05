@@ -27,9 +27,9 @@
             </div>
 
 
-            {{-- like --}}
-            <div class="flex mt-1 items-center">
-                <form action="/tweets/{{$tweet->id}}/like" method="POST" class="flex items-center mr-4">
+            <div class="flex mt-1 items-center tweet">
+                {{-- like --}}
+                <form action="/tweets/{{$tweet->id}}/like" method="POST" class="flex items-center mr-4 like-form">
                     @csrf
 
                     <button type="submit">
@@ -40,20 +40,20 @@
                         @endif
                     </button>
 
-                    <span class="ml-1">
+                    <span class="ml-1 like-count">
                         {{ $tweet->likes ?? 0 }}
                     </span>
 
                 </form>
 
                 {{-- dislike --}}
-                <form action="/tweets/{{$tweet->id}}/dislike" method="POST" class="flex items-center">
+                <form action="/tweets/{{$tweet->id}}/dislike" method="POST" class="flex items-center dislike-form">
                     @csrf
 
                     <button type="submit">
                         <x-dislike :tweet="$tweet" />
                     </button>
-                    <span>
+                    <span class="dislike-count">
                         {{ $tweet->dislikes ?? 0 }}
                     </span>
                 </form>
@@ -63,13 +63,13 @@
                     {{ $tweet->comments()->count() ?? 0 }}
                  </span>
 
-                <form action="/tweets/{{$tweet->id}}/share" method="POST" class="items-center flex bottom-3 right-3 py-2 px-4">
+                <form action="/tweets/{{$tweet->id}}/share" method="POST" class="items-center flex bottom-3 right-3 py-2 px-4 share-form">
                     @csrf
 
                     <button type="submit">
                         <x-share-button :tweet="$tweet" />
                     </button>
-                    <p class="ml-1">{{$tweet->shares()->count() ?? 0}}</p>
+                    <p class="ml-1 share-count">{{$tweet->shares()->count() ?? 0}}</p>
                 </form>
 
                 <div class="flex bottom-3 right-3 py-2 px-4">

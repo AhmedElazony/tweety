@@ -4,11 +4,12 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-import './bootstrap';
+import "./bootstrap";
+import "./tweets.js";
 // import Vue from './vue';
 // window.Vue = require('vue').default;
-import { createApp } from 'vue';
-import {getElement} from "bootstrap/js/src/util/index.js";
+import { createApp } from "vue";
+import { getElement } from "bootstrap/js/src/util/index.js";
 
 /**
  * Next, we will create a fresh Vue application instance. You may then begin
@@ -52,4 +53,3 @@ import {getElement} from "bootstrap/js/src/util/index.js";
 //             });
 //     }
 // });
-
